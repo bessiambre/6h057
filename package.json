@@ -1,0 +1,23 @@
+{
+  "name": "6h057",
+  "version": "1.0.0",
+  "description": "Comment page",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bessiambre/6h057.git"
+  },
+  "author": "Benoit Essiambre",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bessiambre/6h057/issues"
+  },
+  "homepage": "https://github.com/bessiambre/6h057#readme",
+  "dependencies": {
+    "express": "^4.18.1",
+    "jshint": "^2.13.5"
+  }
+}
