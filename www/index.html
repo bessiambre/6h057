@@ -1,13 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=544, initial-scale=1">
-    <title>A captivating article</title>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=544, initial-scale=1">
+	<title>A captivating article</title>
 	<link rel="stylesheet" href="css/style.css">
-    <script type="module" src="js/index.js"></script>
-  </head>
-  <body>
-    <div id="main">Hello world</div>
-  </body>
+	<script type="module" src="js/index.js"></script>
+</head>
+<body>
+	<h2>Discussion</h2>
+	<div id="commentInputSection">
+		<div id="usravatar"></div>
+		<textarea placeholder="What are your thoughts?" class="commentinput"></textarea>
+		<button id="commentBut">Comment</button>
+	</div>
+	<div id="comments"></div>
+	<template id="commentTmplt">
+		<div class="comment">
+			<div class="commentLeft">
+				<div class="avatar">
+				</div>
+				<div class="verticalbar">
+				</div>
+			</div>
+			<div class="commentRight">
+				<div class="commenthead"><span class="username"></span> · <span class="date"></span></div>
+				<div class="commentbody"></div>
+				<div class="commentfoot">
+					<div class="upvote">▲ Upvote</div>
+					<div class="reply">Reply</div>
+				</div>
+				<div class="replies"></div>
+			</div>
+		</div>
+	</template>
+</body>
 </html>
