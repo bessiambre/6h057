@@ -8,31 +8,38 @@
 	<script type="module" src="js/index.js"></script>
 </head>
 <body>
-	<h2>Discussion</h2>
+<div id="main">
+	<h4>Discussion</h4>
+	<br>
 	<div id="commentInputSection">
-		<div id="usravatar"></div>
-		<textarea placeholder="What are your thoughts?" class="commentinput"></textarea>
+		<img id="usravatar" src="img/user1.png"></img>
+		<textarea placeholder="What are your thoughts?" id="commentinput"></textarea>
 		<button id="commentBut">Comment</button>
 	</div>
+	<br>
+	<hr>
+	<br>
 	<div id="comments"></div>
-	<template id="commentTmplt">
-		<div class="comment">
-			<div class="commentLeft">
-				<div class="avatar">
-				</div>
-				<div class="verticalbar">
-				</div>
-			</div>
-			<div class="commentRight">
-				<div class="commenthead"><span class="username"></span> · <span class="date"></span></div>
-				<div class="commentbody"></div>
-				<div class="commentfoot">
-					<div class="upvote">▲ Upvote</div>
-					<div class="reply">Reply</div>
-				</div>
-				<div class="replies"></div>
+</div>
+
+<template id="commentTmplt">
+	<div class="comment">
+		<div class="commentLeft">
+			<img class="avatar">
+			</img>
+			<div class="verticalbar">
 			</div>
 		</div>
-	</template>
+		<div class="commentRight">
+			<div class="commenthead"><span class="username"></span> · <span class="date"></span></div>
+			<div class="commentbody"></div>
+			<div class="commentfoot">
+				<div class="upvote">▲ Upvote</div>
+				<div class="reply">Reply</div>
+			</div>
+			<div class="replies"></div>
+		</div>
+	</div>
+</template>
 </body>
 </html>

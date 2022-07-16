@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&family=Roboto:ital,wght@0,400;0,700;1,400&display=swap');
+
+
+#main{
+    margin: 0 auto;
+    max-width: 48rem;
+    padding: 1rem;
+}
+
+h1,h2,h3,h4,h5,h6{
+    margin: 1.5rem 0 0;
+    font-weight: inherit;
+    line-height: 1.4;
+    font-family:  'Heebo', Helvetica, sans-serif;
+    font-weight: 700;
+}
+h1{
+	font-size: 3rem;
+}
+h2{
+	font-size: 2.408rem;
+}
+h3{
+	font-size: 1.933rem;
+}
+h4{
+	font-size: 1.551rem;
+}
+h5{
+	font-size: 1.246rem;
+}
+h6{
+	font-size: 1rem;
+}
+
+#commentInputSection{
+	display:flex;
+}
+
+
+#usravatar,avatar{
+    width: 2rem;
+    height: 2rem;
+    margin: 0;
+	display: block;
+	border-radius: 1rem;
+	flex:0 0;
+}
+
+#commentinput{
+	flex:1 1;
+	margin:0 1rem;
+	line-height: 2rem;
+	height:2rem;
+	padding: 0 0.75rem;
+	resize: none;
+	display:block;
+	background-clip: padding-box;
+	border: 1px solid #e0e0e0;
+	appearance: none;
+	border-radius: 0.325rem;
+	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+  
+#commentinput:focus{
+	outline: none !important;
+	border:1px solid #2563d6;
+}
+
+#commentBut{
+	width: 4rem;
+}
+
+button {
+	background-color: rgb(135 102 246);
+	border: 1px solid rgb(135 102 246);
+	border-radius: 0.325rem;
+	box-sizing: content-box;
+    color: white;
+    padding: 0px 1rem;
+    text-align: center;
+    text-decoration: none;
+    line-height: 2rem;
+    font-size: 1rem;
+    cursor: pointer;
+    margin: 0;
+	height: 2rem;
+	font-weight: 600;
+	font-size: 0.8rem;
+}
+
+hr{
+	height:1px;
+	border-width:0;
+	color:#e0e0e0;
+	background-color:#e0e0e0;
+	margin:2rem auto;
+}

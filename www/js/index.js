@@ -50,7 +50,7 @@ class ReactiveView {
 
 class CommentsView extends ReactiveView{
 	static properties={
-		comments: {} //'name' property and its empty options
+		comments: {} //'comments' property and its empty options
 	};
 	constructor(){
 		super();
@@ -58,7 +58,7 @@ class CommentsView extends ReactiveView{
 			commentid:1,
 			username:"Rob Hope",
 			date:new Date(),
-			body:"Jeepers now that's a huge release with some big community earnings to back it - it must be so rewarding seeing creators quit their day jons after monetizing (with real MRR) on the new platform.",
+			body:"Jeepers now that's a huge release with some big community earnings to back it - it must be so rewarding seeing creators quit their day jobs after monetizing (with real MRR) on the new platform.",
 			upvotes:1,
 			replies:[]
 		}];
