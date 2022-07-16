@@ -1,5 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&family=Roboto:ital,wght@0,400;0,700;1,400&display=swap');
 
+body {
+	color: #37352f;
+	font-family:  'Roboto', Helvetica, sans-serif;
+	font-weight: 400;
+	margin:0;
+	box-sizing: border-box;
+}
 
 #main{
     margin: 0 auto;
@@ -12,7 +19,8 @@ h1,h2,h3,h4,h5,h6{
     font-weight: inherit;
     line-height: 1.4;
     font-family:  'Heebo', Helvetica, sans-serif;
-    font-weight: 700;
+	font-weight: 700;
+	color:#111;
 }
 h1{
 	font-size: 3rem;
@@ -33,12 +41,13 @@ h6{
 	font-size: 1rem;
 }
 
+
+/* Discussion input css */
 #commentInputSection{
 	display:flex;
 }
 
-
-#usravatar,avatar{
+#usravatar,.avatar{
     width: 2rem;
     height: 2rem;
     margin: 0;
@@ -62,7 +71,6 @@ h6{
 	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-  
 #commentinput:focus{
 	outline: none !important;
 	border:1px solid #2563d6;
@@ -96,4 +104,52 @@ hr{
 	color:#e0e0e0;
 	background-color:#e0e0e0;
 	margin:2rem auto;
+}
+
+
+/* Comments css */
+.comment{
+	display:flex;
+}
+
+.commentLeft{
+	width:2rem;
+	flex:0 0;
+}
+.commentRight{
+	flex:1 1;
+	padding: 0 1rem;
+}
+
+.username{
+	font-weight: 600;
+}
+
+.date{
+	font-size: 0.8rem;
+	color:rgb(68 104 143);
+}
+
+.commentbody{
+	line-height: 1.5;
+	margin:0.5rem 0;
+}
+
+.commentfoot{
+	display: flex;
+	justify-content:flex-start;
+}
+
+.upvote{
+	color:rgb(68 104 143);
+	padding:1rem 1rem 1rem 0;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.reply{
+	color:rgb(68 104 143);
+	padding:1rem;
+	font-weight: 600;
+	cursor: pointer;
 }

@@ -1,7 +1,7 @@
+import {fromNow} from './util.js';
 
 
 /*
- * ReactiveView
  * This class has some helper functions to efficiently render html views
  * and add reactivity when properties change.
  * See https://benoitessiambre.com/vanilla.html
@@ -47,7 +47,9 @@ class ReactiveView {
 }
 
 
-
+/**
+ * Displays list of comments
+ */
 class CommentsView extends ReactiveView{
 	static properties={
 		comments: {} //'comments' property and its empty options
@@ -83,16 +85,16 @@ class CommentsView extends ReactiveView{
 		nameEl.textContent = comment.username;
 		
 		let dateEl = clone.querySelector(".date");
-		dateEl.textContent = comment.date.toString();
+		dateEl.textContent = `• ${fromNow(comment.date)}`;
 		
 		let bodyEl = clone.querySelector(".commentbody");
 		bodyEl.textContent = comment.body;
 		
 		let upvoteEl = clone.querySelector(".upvote");
 		if(comment.upvotes>0){
-			upvoteEl.textContent = `${comment.upvotes} ▲ Upvote`;
+			upvoteEl.textContent = `▲${comment.upvotes} Upvote`;
 		}else{
-			upvoteEl.textContent = `▲ Upvote`;
+			upvoteEl.textContent = `▲ Upvote`;
 		}
 
 		let repliesEl = clone.querySelector(".replies");
@@ -109,7 +111,7 @@ class CommentsView extends ReactiveView{
 
 let main=function(){
 	let commentsview=new CommentsView();
-	commentsview.el=document.querySelector('#comments'); //attach to a div inside the html
+	commentsview.el=document.querySelector('#comments'); //attach to the comments holder div
 };
  
  
