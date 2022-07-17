@@ -54,10 +54,12 @@ class ReactiveView {
  */
 class CommentsView extends ReactiveView{
 	static properties={
-		comments: {} //'comments' property and its empty options
+		comments: {}, //'comments' property and its empty options
+		loggedInUser:{}
 	};
-	constructor(){
-		super();
+	constructor(options){
+		super(options);
+		this.loggedInUser=options.loggedInUser
 		this.loadComments();
 		this.comments=[];
 	}
@@ -97,7 +99,7 @@ class CommentsView extends ReactiveView{
 		// }
 		//upvoteEl.addEventListener("click",()=>this.upvoteClick(comment));
 		const root = ReactDOM.createRoot(upvoteEl);
-		root.render(e(UpvoteButton,{upvotes:comment.upvotes,handleClick:()=>this.upvoteClick(comment)}));
+		root.render(e(UpvoteButton,{upvotes:comment.upvotes,handleClick:()=>this.upvoteClick(comment),upvoted:comment.upvoted}));
 
 		
 
@@ -116,16 +118,16 @@ class CommentsView extends ReactiveView{
     	parentEl.appendChild(clone);
 	}
 	async loadComments(){
-		let [comments] = await apiCall(`/comment?articleid=${1}`);
-		let commentsById={};
+		let [comments] = await apiCall(`/comment?articleid=${1}&userid=${this.loggedInUser}`);
+		this.commentsById={};
 		let topComments=[];
 		for(let c of comments){
-			commentsById[c.commentid]=c;
+			this.commentsById[c.commentid]=c;
 			c.replies=[];
 		}
 		for(let c of comments){
 			if(c.parentcomment!==null){
-				commentsById[c.parentcomment].replies.push(c);
+				this.commentsById[c.parentcomment].replies.push(c);
 			}else{
 				topComments.push(c);
 			}
@@ -137,10 +139,20 @@ class CommentsView extends ReactiveView{
 			method:'PUT',
 			json:{
 				commentid:comment.commentid,
-				userid:mainController.loggedInUser
+				userid:this.loggedInUser
 			}
 		});
 		this.loadComments();
+	}
+	async refreshUpvotes(commentid){
+		let comment=this.commentsById[commentid];
+		if(comment){
+			let [res] = await apiCall(`/upvote?commentid=${commentid}&userid=${this.loggedInUser}`);
+			console.log(res);
+			comment.upvotes=res.upvotes;
+			comment.upvoted=res.upvoted;
+			this.refresh();//since we are no replacing the whole comments property
+		}
 	}
 }
 
@@ -151,7 +163,7 @@ class MainController{
 	constructor(){
 		this.loggedInUser=Math.floor(Math.random()*4)+1;
 
-		this.commentsview=new CommentsView();
+		this.commentsview=new CommentsView({loggedInUser:this.loggedInUser});
 		this.commentsview.el=document.querySelector('#comments'); //attach to the comments holder div
 
 		//make textarea autogrow based on https://stackoverflow.com/a/25621277/433787
@@ -163,6 +175,12 @@ class MainController{
 
 		const avatarEl=document.querySelector('#usravatar');
 		avatarEl.src=`img/user${this.loggedInUser}.png`;
+
+		this.socket = io('/',{query: {articleid:1}});
+		this.socket.on("upvote_change",(msg)=>{
+			//console.log(msg);
+			this.commentsview.refreshUpvotes(msg.commentid);
+		});
 	}
 	textareainput(e) {
 		e.style.height = "auto";

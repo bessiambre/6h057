@@ -1,8 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const http = require('http');
+const Push = require('./lib/push.js');
+
 const app = express();
+const server = http.createServer(app);
 const port = 3000;
 const { Pool, Client } = require('pg');
+
 
 const pool = new Pool();
 
@@ -17,6 +22,7 @@ app.get('/', (req, res) => {
 app.get('/comment', async (req, res, next) => {
 	try {
 		const articleid = req.query.articleid;
+		const userid = req.query.userid;
 
 		const dbres=await pool.query(`
 			SELECT 
@@ -27,12 +33,13 @@ app.get('/comment', async (req, res, next) => {
 			c.articleid,
 			c.parentcomment,
 			u.username,
-			(SELECT count(*) FROM upvote WHERE commentid=c.commentid) as upvotes
+			(SELECT count(*)::integer  FROM upvote WHERE commentid=c.commentid) as upvotes,
+			EXISTS (SELECT 1 FROM upvote WHERE commentid=c.commentid AND userid=$2) as upvoted
 			FROM comment as c
 			JOIN users as u USING(userid)
 			WHERE articleid=$1
 			ORDER BY date DESC
-		`,[articleid]);
+		`,[articleid,userid]);
 		//console.log(dbres);
 		res.json(dbres.rows);
 	}catch(error){
@@ -79,7 +86,33 @@ app.put('/upvote', async(req, res,next) => {
 			`,[commentid,userid]);
 		}
 
+		const dbres3=await pool.query(`
+			SELECT articleid FROM comment WHERE commentid=$1
+		`,[commentid]);
+
+		push.pushForArticle(dbres3.rows[0].articleid,"upvote_change",{commentid});
+
 		res.json({ok:true});
+	}catch(error){
+		return next(error);
+	}
+});
+
+/**
+ * Get upvote count for a single comment
+ */
+app.get('/upvote', async(req, res,next) => {
+	try {
+		const commentid = req.query.commentid;
+		const userid = req.query.userid;
+		const dbres=await pool.query(`
+			SELECT
+				(SELECT count(*)::integer  FROM upvote WHERE commentid=$1) as upvotes,
+				EXISTS (SELECT 1 FROM upvote WHERE commentid=$1 AND userid=$2) as upvoted
+		`,[commentid,userid]);
+
+		res.json(dbres.rows[0]);
+
 	}catch(error){
 		return next(error);
 	}
@@ -87,6 +120,8 @@ app.put('/upvote', async(req, res,next) => {
 
 app.use(express.static('www'));
 
-app.listen(port, () => {
+const push = new Push({server});
+
+server.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

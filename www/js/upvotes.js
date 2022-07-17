@@ -1,4 +1,4 @@
-'use strict';
+import {apiCall} from './util.js';
 
 /**
  * I admit that I'm note very familiar with React, instead having used lit.dev. They are
@@ -13,9 +13,11 @@ export class UpvoteButton extends React.Component {
     super(props);
   }
   render() {
+	
 	let text='▲ Upvote';
-	if (this.props.upvotes) {
-		text= `▲${this.props.upvotes} Upvote`;
+
+	if (this.props.upvotes && this.props.upvotes>0) {
+		text= `▲${this.props.upvotes} ${(this.props.upvoted?'Cancel upvote':'Upvote')}`;
 	}
 
     return e(
