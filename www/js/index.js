@@ -1,5 +1,7 @@
 import {fromNow,apiCall} from './util.js';
+import {UpvoteButton} from './upvotes.js';
 
+const e = React.createElement;
 
 /*
  * This class has some helper functions to efficiently render html views
@@ -88,13 +90,16 @@ class CommentsView extends ReactiveView{
 		bodyEl.textContent = comment.body;
 		
 		let upvoteEl = clone.querySelector(".upvote");
-		if(comment.upvotes>0){
-			upvoteEl.textContent = `▲${comment.upvotes} Upvote`;
-		}else{
-			upvoteEl.textContent = `▲ Upvote`;
-		}
+		// if(comment.upvotes>0){
+		// 	upvoteEl.textContent = `▲${comment.upvotes} Upvote`;
+		// }else{
+		// 	upvoteEl.textContent = `▲ Upvote`;
+		// }
+		//upvoteEl.addEventListener("click",()=>this.upvoteClick(comment));
+		const root = ReactDOM.createRoot(upvoteEl);
+		root.render(e(UpvoteButton,{upvotes:comment.upvotes,handleClick:()=>this.upvoteClick(comment)}));
 
-		upvoteEl.addEventListener("click",()=>this.upvoteClick(comment));
+		
 
 		let repliesEl = clone.querySelector(".replies");
 		
