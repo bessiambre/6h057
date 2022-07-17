@@ -22,7 +22,15 @@ app.get('/comment', async (req, res, next) => {
 		const articleid = req.query.articleid;
 
 		const dbres=await pool.query(`
-			SELECT c.commentid,c.userid,c.created as date,c.body,c.articleid,c.parentcomment, u.username
+			SELECT 
+			c.commentid,
+			c.userid,
+			c.created as date,
+			c.body,
+			c.articleid,
+			c.parentcomment,
+			u.username,
+			(SELECT count(*) FROM upvote WHERE commentid=c.commentid) as upvotes
 			FROM comment as c
 			JOIN users as u USING(userid)
 			WHERE articleid=$1
@@ -57,14 +65,27 @@ app.post('/comment', async(req, res,next) => {
 	}
 });
 
-app.put('/upvote', (req, res) => {
-	const commentid = req.query.commentid;
-	const userid=1;//assume userid 1 logged in
-	pool.query('SELECT NOW()', (err, res) => {
-	  console.log(res.rows);
+app.put('/upvote', async(req, res,next) => {
+	try {
+		const commentid = req.body.commentid;
+		const userid=1;//assume userid 1 logged in
+		const dbres=await pool.query(`
+			INSERT INTO upvote (commentid,userid) VALUES ($1,$2)
+			ON CONFLICT DO NOTHING
+			RETURNING commentid
+		`,[commentid,userid]);
 
-	  res.send('Hello World!');
-	});
+		if(dbres.rows.length===0){
+			//was aready upvoted, reverse the upvote
+			const dbres2=await pool.query(`
+				DELETE FROM upvote WHERE commentid=$1 AND userid=$2
+			`,[commentid,userid]);
+		}
+
+		res.json({ok:true});
+	}catch(error){
+		return next(error);
+	}
 });
 
 app.use(express.static('www'));

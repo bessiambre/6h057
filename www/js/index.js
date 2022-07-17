@@ -91,6 +91,8 @@ class CommentsView extends ReactiveView{
 			upvoteEl.textContent = `▲ Upvote`;
 		}
 
+		upvoteEl.addEventListener("click",()=>this.upvoteClick(comment));
+
 		let repliesEl = clone.querySelector(".replies");
 		
 		if(comment.replies.length>0){
@@ -107,7 +109,6 @@ class CommentsView extends ReactiveView{
 	}
 	async loadComments(){
 		let [comments] = await apiCall(`/comment?articleid=${1}`);
-		console.log(comments);
 		let commentsById={};
 		let topComments=[];
 		for(let c of comments){
@@ -122,6 +123,15 @@ class CommentsView extends ReactiveView{
 			}
 		}
 		this.comments=topComments;
+	}
+	async upvoteClick(comment){
+		let [result] = await apiCall(`/upvote`,{
+			method:'PUT',
+			json:{
+				commentid:comment.commentid
+			}
+		});
+		this.loadComments();
 	}
 }
 
@@ -138,13 +148,13 @@ class MainController{
 		this.textareaEl.addEventListener("input", (e)=>this.textareainput(e.target));
 
 		const commentButEl=document.querySelector('#commentBut');
-		commentButEl.addEventListener("click",()=>this.commentclick());
+		commentButEl.addEventListener("click",()=>this.commentClick());
 	}
 	textareainput(e) {
 		e.style.height = "auto";
 		e.style.height = (e.scrollHeight) + "px";
 	}
-	async commentclick(){
+	async commentClick(){
 		let body=this.textareaEl.value;
 		let [result] = await apiCall(`/comment`,{
 			method:'POST',
