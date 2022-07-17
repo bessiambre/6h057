@@ -44,7 +44,7 @@ app.post('/comment', async(req, res,next) => {
 	try {
 		const body = req.body.body;
 		const articleid = req.body.articleid;
-		const userid=1;//assume userid 1 logged in
+		const userid=req.body.userid;
 		let dbres=await pool.query(`
 		INSERT INTO comment (userid,created,body,articleid,parentcomment)
 		VALUES (
@@ -65,7 +65,7 @@ app.post('/comment', async(req, res,next) => {
 app.put('/upvote', async(req, res,next) => {
 	try {
 		const commentid = req.body.commentid;
-		const userid=1;//assume userid 1 logged in
+		const userid=req.body.userid;
 		const dbres=await pool.query(`
 			INSERT INTO upvote (commentid,userid) VALUES ($1,$2)
 			ON CONFLICT DO NOTHING

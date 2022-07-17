@@ -75,6 +75,9 @@ class CommentsView extends ReactiveView{
 		let template = document.querySelector('#commentTmplt');
 		let clone = template.content.cloneNode(true);
 
+		let avatarEl=clone.querySelector(".avatar");
+		avatarEl.src=`img/user${comment.userid}.png`;
+
 		let nameEl = clone.querySelector(".username");
 		nameEl.textContent = comment.username;
 		
@@ -128,7 +131,8 @@ class CommentsView extends ReactiveView{
 		let [result] = await apiCall(`/upvote`,{
 			method:'PUT',
 			json:{
-				commentid:comment.commentid
+				commentid:comment.commentid,
+				userid:mainController.loggedInUser
 			}
 		});
 		this.loadComments();
@@ -140,6 +144,8 @@ class CommentsView extends ReactiveView{
  */
 class MainController{
 	constructor(){
+		this.loggedInUser=Math.floor(Math.random()*4)+1;
+
 		this.commentsview=new CommentsView();
 		this.commentsview.el=document.querySelector('#comments'); //attach to the comments holder div
 
@@ -149,6 +155,9 @@ class MainController{
 
 		const commentButEl=document.querySelector('#commentBut');
 		commentButEl.addEventListener("click",()=>this.commentClick());
+
+		const avatarEl=document.querySelector('#usravatar');
+		avatarEl.src=`img/user${this.loggedInUser}.png`;
 	}
 	textareainput(e) {
 		e.style.height = "auto";
@@ -160,7 +169,8 @@ class MainController{
 			method:'POST',
 			json:{
 				body:body,
-				articleid:1
+				articleid:1,
+				userid:mainController.loggedInUser
 			}
 		});
 		this.commentsview.loadComments();
@@ -169,9 +179,9 @@ class MainController{
 }
 
 
-
+let mainController;
 let main=function(){
-	let mainController=new MainController();
+	mainController=new MainController();
 };
  
  
