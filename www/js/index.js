@@ -48,11 +48,17 @@ class ReactiveView {
 	}
 }
 
+function textareainput(e) {
+	e.style.height = "auto";
+	e.style.height = (e.scrollHeight) + "px";
+}
+
 /** Single comment */
 class CommentView extends ReactiveView{
 	static properties={
 		comment:{},
-		loggedInUser:{}
+		loggedInUser:{},
+		showReplyBox:{}
 	}
 	constructor(options){
 		super(options);
@@ -61,6 +67,7 @@ class CommentView extends ReactiveView{
 		this.onChange=options.onChange;
 		let template = document.querySelector('#commentTmplt');
 		this.el.appendChild(template.content.cloneNode(true));
+		this.showReplyBox=false;
 	}
 	render(){
 		let comment=this.comment;
@@ -94,8 +101,31 @@ class CommentView extends ReactiveView{
 				});
 				repliesEl.appendChild(commentView.el);
 			}
+			repliesEl.style.display = "block";
 		}else{
-			repliesEl.remove();
+			repliesEl.style.display = "none";
+		}
+
+
+		let replyEl = this.el.querySelector(".reply");
+		let commentInputSectionEl=this.el.querySelector(".commentInputSection");
+		if(comment.parentcomment!==null){//to limit to one level of nesting remove reply button on 
+			replyEl.style.display = "none";
+			commentInputSectionEl.style.display = "none";
+		}else{
+			replyEl.addEventListener("click",()=>this.replyClick());
+
+			if(this.showReplyBox===true){
+				let textareaEl = this.el.querySelector(".commentinput");
+				textareaEl.addEventListener("input", (e)=>textareainput(e.target));
+				let usravatarEl= this.el.querySelector(".usravatar");
+				usravatarEl.src=`img/user${this.loggedInUser}.png`;
+				const commentButEl=this.el.querySelector('.commentBut');
+				commentButEl.addEventListener("click",()=>this.commentClick(textareaEl.value));
+				commentInputSectionEl.style.display = "flex";
+			}else{
+				commentInputSectionEl.style.display = "none";
+			}
 		}
 	}
 	async upvoteClick(comment){
@@ -108,6 +138,22 @@ class CommentView extends ReactiveView{
 		});
 		this.onChange();
 		
+	}
+	replyClick(){
+		this.showReplyBox=true;
+	}
+	async commentClick(body){
+		let [result] = await apiCall(`/comment`,{
+			method:'POST',
+			json:{
+				body:body,
+				articleid:1,
+				userid:this.loggedInUser,
+				parent:this.comment.commentid
+			}
+		});
+		this.showReplyBox=false;
+		this.onChange();
 	}
 }
 
@@ -184,7 +230,7 @@ class MainController{
 
 		//make textarea autogrow based on https://stackoverflow.com/a/25621277/433787
 		this.textareaEl = document.querySelector("#commentinput");
-		this.textareaEl.addEventListener("input", (e)=>this.textareainput(e.target));
+		this.textareaEl.addEventListener("input", (e)=>textareainput(e.target));
 
 		const commentButEl=document.querySelector('#commentBut');
 		commentButEl.addEventListener("click",()=>this.commentClick());
@@ -197,10 +243,6 @@ class MainController{
 			//console.log(msg);
 			this.commentsview.refreshUpvotes(msg.commentid);
 		});
-	}
-	textareainput(e) {
-		e.style.height = "auto";
-		e.style.height = (e.scrollHeight) + "px";
 	}
 	async commentClick(){
 		let body=this.textareaEl.value;

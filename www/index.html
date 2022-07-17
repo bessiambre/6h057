@@ -13,10 +13,9 @@
 <body>
 <div id="main">
 	<h4>Discussion</h4>
-	<br>
-	<div id="commentInputSection">
+	<div id="commentInputSection" class="commentInputSection">
 		<img id="usravatar" src="img/user1.png"/>
-		<textarea placeholder="What are your thoughts?" id="commentinput"></textarea>
+		<textarea placeholder="What are your thoughts?" id="commentinput" class="commentinput"></textarea>
 		<button id="commentBut">Comment</button>
 	</div>
 	<hr>
@@ -34,6 +33,11 @@
 			<div class="commentfoot">
 				<div class="upvote">▲ Upvote</div>
 				<div class="reply">Reply</div>
+			</div>
+			<div class="commentInputSection">
+				<img class="usravatar" src="img/user1.png"/>
+				<textarea placeholder="What are your thoughts?" class="commentinput"></textarea>
+				<button class="commentBut">Comment</button>
 			</div>
 			<div class="replies"></div>
 		</div>

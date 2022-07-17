@@ -52,6 +52,7 @@ app.post('/comment', async(req, res,next) => {
 		const body = req.body.body;
 		const articleid = req.body.articleid;
 		const userid=req.body.userid;
+		const parent=req.body.parent;
 		let dbres=await pool.query(`
 		INSERT INTO comment (userid,created,body,articleid,parentcomment)
 		VALUES (
@@ -59,8 +60,8 @@ app.post('/comment', async(req, res,next) => {
 			NOW(),
 			$2,
 			$3,
-			NULL
-		)`,[userid,body,articleid]);
+			$4
+		)`,[userid,body,articleid,parent]);
 
 		res.json({ok:true});
 
