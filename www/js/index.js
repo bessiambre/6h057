@@ -48,6 +48,69 @@ class ReactiveView {
 	}
 }
 
+/** Single comment */
+class CommentView extends ReactiveView{
+	static properties={
+		comment:{},
+		loggedInUser:{}
+	}
+	constructor(options){
+		super(options);
+		this.comment=options.comment;
+		this.loggedInUser=options.loggedInUser;
+		this.onChange=options.onChange;
+		let template = document.querySelector('#commentTmplt');
+		this.el.appendChild(template.content.cloneNode(true));
+	}
+	render(){
+		let comment=this.comment;
+		let avatarEl=this.el.querySelector(".avatar");
+		avatarEl.src=`img/user${comment.userid}.png`;
+
+		let nameEl = this.el.querySelector(".username");
+		nameEl.textContent = comment.username;
+		
+		let dateEl = this.el.querySelector(".date");
+		dateEl.textContent = `• ${fromNow(comment.date)}`;
+		
+		let bodyEl = this.el.querySelector(".commentbody");
+		bodyEl.textContent = comment.body;
+		
+		let upvoteEl = this.el.querySelector(".upvote");
+
+		const root = ReactDOM.createRoot(upvoteEl);
+		root.render(e(UpvoteButton,{upvotes:comment.upvotes,handleClick:()=>this.upvoteClick(comment),upvoted:comment.upvoted}));
+
+		let repliesEl = this.el.querySelector(".replies");
+		
+		if(comment.replies.length>0){
+			let commentLeftEl=this.el.querySelector(".commentLeft");
+			commentLeftEl.classList.add("hasreplies");
+			for(let reply of comment.replies){
+				let commentView=new CommentView({
+					comment:reply,
+					loggedInUser:this.loggedInUser,
+					onChange:()=>this.onChange() //not necessary with websocket push but just in case push is down
+				});
+				repliesEl.appendChild(commentView.el);
+			}
+		}else{
+			repliesEl.remove();
+		}
+	}
+	async upvoteClick(comment){
+		let [result] = await apiCall(`/upvote`,{
+			method:'PUT',
+			json:{
+				commentid:comment.commentid,
+				userid:this.loggedInUser
+			}
+		});
+		this.onChange();
+		
+	}
+}
+
 
 /**
  * Displays list of comments
@@ -71,51 +134,14 @@ class CommentsView extends ReactiveView{
 		this.el.textContent = '';
 
 		for(let comment of this.comments){
-			this.renderComment(comment,this.el);
+			let commentView=new CommentView({
+				comment,
+				loggedInUser:this.loggedInUser,
+				onChange:()=>this.loadComments() //not necessary with websocket push but just in case push is down
+			});
+			this.el.appendChild(commentView.el);
 		}
 		
-	}
-	renderComment(comment, parentEl){
-		let template = document.querySelector('#commentTmplt');
-		let clone = template.content.cloneNode(true);
-
-		let avatarEl=clone.querySelector(".avatar");
-		avatarEl.src=`img/user${comment.userid}.png`;
-
-		let nameEl = clone.querySelector(".username");
-		nameEl.textContent = comment.username;
-		
-		let dateEl = clone.querySelector(".date");
-		dateEl.textContent = `• ${fromNow(comment.date)}`;
-		
-		let bodyEl = clone.querySelector(".commentbody");
-		bodyEl.textContent = comment.body;
-		
-		let upvoteEl = clone.querySelector(".upvote");
-		// if(comment.upvotes>0){
-		// 	upvoteEl.textContent = `▲${comment.upvotes} Upvote`;
-		// }else{
-		// 	upvoteEl.textContent = `▲ Upvote`;
-		// }
-		//upvoteEl.addEventListener("click",()=>this.upvoteClick(comment));
-		const root = ReactDOM.createRoot(upvoteEl);
-		root.render(e(UpvoteButton,{upvotes:comment.upvotes,handleClick:()=>this.upvoteClick(comment),upvoted:comment.upvoted}));
-
-		
-
-		let repliesEl = clone.querySelector(".replies");
-		
-		if(comment.replies.length>0){
-			let commentLeftEl=clone.querySelector(".commentLeft");
-			commentLeftEl.classList.add("hasreplies");
-			for(let reply of comment.replies){
-				this.renderComment(reply,repliesEl);
-			}
-		}else{
-			repliesEl.remove();
-		}
-
-    	parentEl.appendChild(clone);
 	}
 	async loadComments(){
 		let [comments] = await apiCall(`/comment?articleid=${1}&userid=${this.loggedInUser}`);
@@ -133,16 +159,6 @@ class CommentsView extends ReactiveView{
 			}
 		}
 		this.comments=topComments;
-	}
-	async upvoteClick(comment){
-		let [result] = await apiCall(`/upvote`,{
-			method:'PUT',
-			json:{
-				commentid:comment.commentid,
-				userid:this.loggedInUser
-			}
-		});
-		this.loadComments();
 	}
 	async refreshUpvotes(commentid){
 		let comment=this.commentsById[commentid];
