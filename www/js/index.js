@@ -125,11 +125,29 @@ class CommentsView extends ReactiveView{
 	}
 }
 
+/**
+ * The main page was built in pure html in the html page as per specification but an object is still useful for event handling etc.
+ */
+class MainController{
+	constructor(){
+		this.commentsview=new CommentsView();
+		this.commentsview.el=document.querySelector('#comments'); //attach to the comments holder div
+
+		//make textarea autogrow based on https://stackoverflow.com/a/25621277/433787
+		const textareaEl = document.querySelector("textarea");
+		textareaEl.addEventListener("input", (e)=>this.textareainput(e.target), false);
+		
+	}
+	textareainput(e) {
+		e.style.height = "auto";
+		e.style.height = (e.scrollHeight) + "px";
+	}
+}
+
 
 
 let main=function(){
-	let commentsview=new CommentsView();
-	commentsview.el=document.querySelector('#comments'); //attach to the comments holder div
+	let mainController=new MainController();
 };
  
  

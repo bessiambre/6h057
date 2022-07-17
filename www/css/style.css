@@ -59,9 +59,9 @@ h6{
 #commentinput{
 	flex:1 1;
 	margin:0 1rem;
-	line-height: 2rem;
-	height:2rem;
-	padding: 0 0.75rem;
+	line-height: 1rem;
+	height:1rem;
+	padding: 0.5rem 0.75rem;
 	resize: none;
 	display:block;
 	background-clip: padding-box;
@@ -69,6 +69,7 @@ h6{
 	appearance: none;
 	border-radius: 0.325rem;
 	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+	overflow-y:hidden;
 }
 
 #commentinput:focus{
