@@ -11,10 +11,7 @@ const pool = new Pool();
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-  res.send('Hello World!');
-  pool.query('SELECT NOW()', (err, res) => {
-	console.log(res.rows);
-  });
+	res.redirect('/index.html');
 });
 
 app.get('/comment', async (req, res, next) => {
