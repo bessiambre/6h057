@@ -1,4 +1,4 @@
-import {fromNow} from './util.js';
+import {fromNow,apiCall} from './util.js';
 
 
 /*
@@ -56,14 +56,8 @@ class CommentsView extends ReactiveView{
 	};
 	constructor(){
 		super();
-		this.comments=[{
-			commentid:1,
-			username:"Rob Hope",
-			date:new Date(),
-			body:"Jeepers now that's a huge release with some big community earnings to back it - it must be so rewarding seeing creators quit their day jobs after monetizing (with real MRR) on the new platform.",
-			upvotes:1,
-			replies:[]
-		}];
+		this.loadComments();
+		this.comments=[];
 	}
 	render(){
 		//Here I would like to use a templating library such as lit-html
@@ -98,12 +92,36 @@ class CommentsView extends ReactiveView{
 		}
 
 		let repliesEl = clone.querySelector(".replies");
-    	
-    	for(let reply of comment.replies){
-			this.renderComment(reply,repliesEl);
+		
+		if(comment.replies.length>0){
+			let commentLeftEl=clone.querySelector(".commentLeft");
+			commentLeftEl.classList.add("hasreplies");
+			for(let reply of comment.replies){
+				this.renderComment(reply,repliesEl);
+			}
+		}else{
+			repliesEl.remove();
 		}
 
     	parentEl.appendChild(clone);
+	}
+	async loadComments(){
+		let [comments] = await apiCall(`/comment?articleid=${1}`);
+		console.log(comments);
+		let commentsById={};
+		let topComments=[];
+		for(let c of comments){
+			commentsById[c.commentid]=c;
+			c.replies=[];
+		}
+		for(let c of comments){
+			if(c.parentcomment!==null){
+				commentsById[c.parentcomment].replies.push(c);
+			}else{
+				topComments.push(c);
+			}
+		}
+		this.comments=topComments;
 	}
 }
 

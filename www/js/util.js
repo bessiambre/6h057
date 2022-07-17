@@ -1,7 +1,5 @@
 
 
-
-
 /**
  * Human readable elapsed or remaining time (example: 3 minutes ago)
  * @param  {Date|Number|String} date A Date object, timestamp or string parsable with Date.parse()
@@ -39,4 +37,49 @@ export function fromNow(date, nowDate = Date.now(), rft = new Intl.RelativeTimeF
             return interval.unit ? rft.format(isFuture ? x : -x, interval.unit) : interval.text;
         }
     }
+}
+
+
+/**
+ * Helper function wrapping the fetch api
+ * @param {*} resource - fetch api resoure
+ * @param {Object} options - fetch api options
+ */
+export async function apiCall(resource,options){
+
+	options=options || {};
+	options.method=options.method || 'GET';
+
+	if(options.json!==undefined){
+		options.headers=options.headers || {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json'
+		};
+		options.body =JSON.stringify(options.json);
+	}
+
+	let data;
+	let res;
+	try{
+
+		res = await fetch(resource,options);
+
+		if(res.ok===false){
+			console.log(res.status);
+			console.log(res.statusText);
+			
+		}
+
+		data = await res.json();
+
+		if(res.ok===false){
+			console.log(data);
+		}
+
+	}catch(err){
+		console.log(err.message);
+		throw err;
+	}
+
+	return [data,res];
 }

@@ -8,6 +8,7 @@ INSERT INTO sch6h057.users (userid,username) VALUES (1, 'Rob Hope');
 INSERT INTO sch6h057.users (userid,username) VALUES (2, 'Sophie Brecht');
 INSERT INTO sch6h057.users (userid,username) VALUES (3, 'James');
 INSERT INTO sch6h057.users (userid,username) VALUES (4, 'Cameron Lawrence');
+INSERT INTO sch6h057.users (userid,username) VALUES (5, 'Benoit Essiambre');
 
 CREATE TABLE sch6h057.article(
 	articleid BIGSERIAL PRIMARY KEY
