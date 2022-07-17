@@ -8,6 +8,8 @@ const pool = new Pool();
 
 //I started using fastify.io instead of express on new projects but since express is the requirement...
 
+app.use(bodyParser.json());
+
 app.get('/', (req, res) => {
   res.send('Hello World!');
   pool.query('SELECT NOW()', (err, res) => {
@@ -24,6 +26,7 @@ app.get('/comment', async (req, res, next) => {
 			FROM comment as c
 			JOIN users as u USING(userid)
 			WHERE articleid=$1
+			ORDER BY date DESC
 		`,[articleid]);
 		//console.log(dbres);
 		res.json(dbres.rows);
@@ -32,13 +35,26 @@ app.get('/comment', async (req, res, next) => {
 	}
 });
 
-app.post('/comment', (req, res) => {
-	let body = req.body.body;
-	pool.query('SELECT NOW()', (err, res) => {
-	  console.log(res.rows);
+app.post('/comment', async(req, res,next) => {
+	try {
+		const body = req.body.body;
+		const articleid = req.body.articleid;
+		const userid=1;//assume userid 1 logged in
+		let dbres=await pool.query(`
+		INSERT INTO comment (userid,created,body,articleid,parentcomment)
+		VALUES (
+			$1,
+			NOW(),
+			$2,
+			$3,
+			NULL
+		)`,[userid,body,articleid]);
 
-	  res.send('Hello World!');
-	});
+		res.json({ok:true});
+
+	}catch(error){
+		return next(error);
+	}
 });
 
 app.put('/upvote', (req, res) => {
@@ -52,7 +68,7 @@ app.put('/upvote', (req, res) => {
 });
 
 app.use(express.static('www'));
-app.use(bodyParser.json());
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

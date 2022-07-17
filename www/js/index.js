@@ -134,13 +134,27 @@ class MainController{
 		this.commentsview.el=document.querySelector('#comments'); //attach to the comments holder div
 
 		//make textarea autogrow based on https://stackoverflow.com/a/25621277/433787
-		const textareaEl = document.querySelector("textarea");
-		textareaEl.addEventListener("input", (e)=>this.textareainput(e.target), false);
-		
+		this.textareaEl = document.querySelector("textarea");
+		this.textareaEl.addEventListener("input", (e)=>this.textareainput(e.target));
+
+		const commentButEl=document.querySelector('#commentBut');
+		commentButEl.addEventListener("click",()=>this.commentclick());
 	}
 	textareainput(e) {
 		e.style.height = "auto";
 		e.style.height = (e.scrollHeight) + "px";
+	}
+	async commentclick(){
+		let body=this.textareaEl.value;
+		let [result] = await apiCall(`/comment`,{
+			method:'POST',
+			json:{
+				body:body,
+				articleid:1
+			}
+		});
+		this.commentsview.loadComments();
+
 	}
 }
 
