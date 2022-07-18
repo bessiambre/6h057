@@ -258,7 +258,7 @@ class MainController{
 			json:{
 				body:body,
 				articleid:1,
-				userid:mainController.loggedInUser
+				userid:this.loggedInUser
 			}
 		});
 		this.commentsview.loadComments();
