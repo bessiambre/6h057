@@ -61,25 +61,19 @@ export async function apiCall(resource,options){
 	let data;
 	let res;
 	try{
-
 		res = await fetch(resource,options);
-
 		if(res.ok===false){
 			console.log(res.status);
 			console.log(res.statusText);
 			
 		}
-
 		data = await res.json();
-
 		if(res.ok===false){
 			console.log(data);
 		}
-
 	}catch(err){
 		console.log(err.message);
 		throw err;
 	}
-
 	return [data,res];
 }

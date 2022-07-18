@@ -13,13 +13,12 @@ export class UpvoteButton extends React.Component {
     super(props);
   }
   render() {
-	
 	let text='▲ Upvote';
 
 	if (this.props.upvotes && this.props.upvotes>0) {
 		text= `▲${this.props.upvotes} ${(this.props.upvoted?'Cancel upvote':'Upvote')}`;
 	}
-
+	//I could have setup jsx but this would have required a build toolchain. I like the fast iteration pace of a build free setup.
     return e(
       'div',
       { onClick: () => this.props.handleClick() },

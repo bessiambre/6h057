@@ -48,14 +48,21 @@ class ReactiveView {
 	}
 }
 
+/**
+ * Event handler to autogrow textareas
+ * based on https://stackoverflow.com/a/25621277/433787
+ * @param e - DOM element of textarea
+ */
 function textareainput(e) {
 	e.style.height = "auto";
 	e.style.height = (e.scrollHeight) + "px";
 }
 
-/** Single comment */
+/**
+ *  Single comment view
+ * */
 class CommentView extends ReactiveView{
-	static properties={
+	static properties={ //properties and their empty options
 		comment:{},
 		loggedInUser:{},
 		showReplyBox:{}
@@ -70,6 +77,7 @@ class CommentView extends ReactiveView{
 		this.showReplyBox=false;
 	}
 	render(){
+		//Rendered using vanillajs as per requirements. I would usually use lit-html.
 		let comment=this.comment;
 		let avatarEl=this.el.querySelector(".avatar");
 		avatarEl.src=`img/user${comment.userid}.png`;
@@ -90,6 +98,7 @@ class CommentView extends ReactiveView{
 
 		let repliesEl = this.el.querySelector(".replies");
 		
+		//Recursively load replies
 		if(comment.replies.length>0){
 			let commentLeftEl=this.el.querySelector(".commentLeft");
 			commentLeftEl.classList.add("hasreplies");
@@ -106,7 +115,6 @@ class CommentView extends ReactiveView{
 			repliesEl.style.display = "none";
 		}
 
-
 		let replyEl = this.el.querySelector(".reply");
 		let commentInputSectionEl=this.el.querySelector(".commentInputSection");
 		if(comment.parentcomment!==null){//to limit to one level of nesting remove reply button on 
@@ -114,7 +122,7 @@ class CommentView extends ReactiveView{
 			commentInputSectionEl.style.display = "none";
 		}else{
 			replyEl.addEventListener("click",()=>this.replyClick());
-
+			//Once the reply button is clicked an textarea input will appear for the reply.
 			if(this.showReplyBox===true){
 				let textareaEl = this.el.querySelector(".commentinput");
 				textareaEl.addEventListener("input", (e)=>textareainput(e.target));
@@ -136,12 +144,12 @@ class CommentView extends ReactiveView{
 				userid:this.loggedInUser
 			}
 		});
-		this.onChange();
-		
+		this.onChange(); //this will result reloading the comment section, not really necessary with the websocket push
 	}
 	replyClick(){
-		this.showReplyBox=true;
+		this.showReplyBox=true;//this is a reactive property so a rerendering will be triggered
 	}
+	/**Commment button click to save the reply */
 	async commentClick(body){
 		let [result] = await apiCall(`/comment`,{
 			method:'POST',
@@ -159,11 +167,11 @@ class CommentView extends ReactiveView{
 
 
 /**
- * Displays list of comments
+ * View for list of comments
  */
 class CommentsView extends ReactiveView{
-	static properties={
-		comments: {}, //'comments' property and its empty options
+	static properties={ //properties and their empty options
+		comments: {}, 
 		loggedInUser:{}
 	};
 	constructor(options){
@@ -176,7 +184,6 @@ class CommentsView extends ReactiveView{
 		//Here I would like to use a templating library such as lit-html
 		//(see https://benoitessiambre.com/vanilla.html) but since the requirements are vanillajs
 		//we will use vanilla with maybe <template> tags.
-
 		this.el.textContent = '';
 
 		for(let comment of this.comments){
@@ -187,7 +194,6 @@ class CommentsView extends ReactiveView{
 			});
 			this.el.appendChild(commentView.el);
 		}
-		
 	}
 	async loadComments(){
 		let [comments] = await apiCall(`/comment?articleid=${1}&userid=${this.loggedInUser}`);
@@ -206,6 +212,7 @@ class CommentsView extends ReactiveView{
 		}
 		this.comments=topComments;
 	}
+	/** This is called after a push message is received to tell us to refresh a particular comment's upvotes count */
 	async refreshUpvotes(commentid){
 		let comment=this.commentsById[commentid];
 		if(comment){
@@ -213,13 +220,14 @@ class CommentsView extends ReactiveView{
 			console.log(res);
 			comment.upvotes=res.upvotes;
 			comment.upvoted=res.upvoted;
-			this.refresh();//since we are no replacing the whole comments property
+			this.refresh();//since we doing an invisible deep modification to the 'comments' property, a manual refresh is necessary
 		}
 	}
 }
 
+
 /**
- * The main page was built in pure html in the html page as per specification but an object is still useful for event handling etc.
+ * Main controller. Manipulates the pure html parts and creates subviews.
  */
 class MainController{
 	constructor(){
@@ -228,7 +236,6 @@ class MainController{
 		this.commentsview=new CommentsView({loggedInUser:this.loggedInUser});
 		this.commentsview.el=document.querySelector('#comments'); //attach to the comments holder div
 
-		//make textarea autogrow based on https://stackoverflow.com/a/25621277/433787
 		this.textareaEl = document.querySelector("#commentinput");
 		this.textareaEl.addEventListener("input", (e)=>textareainput(e.target));
 
@@ -255,14 +262,13 @@ class MainController{
 			}
 		});
 		this.commentsview.loadComments();
-
 	}
 }
 
 
-let mainController;
+
 let main=function(){
-	mainController=new MainController();
+	let mainController=new MainController();
 };
  
  

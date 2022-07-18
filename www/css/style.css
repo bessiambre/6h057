@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&family=Roboto:ital,wght@0,400;0,700;1,400&display=swap');
 
+/* basic styles */
 body {
 	color: #37352f;
 	font-family:  'Roboto', Helvetica, sans-serif;
@@ -7,13 +8,11 @@ body {
 	margin:0;
 	box-sizing: border-box;
 }
-
 #main{
     margin: 0 auto;
     max-width: 48rem;
     padding: 1rem;
 }
-
 h1,h2,h3,h4,h5,h6{
     margin: 1.5rem 0 0;
     font-weight: inherit;
@@ -47,7 +46,6 @@ h6{
 	margin-top: 1rem;
 	display:flex;
 }
-
 #usravatar,.avatar,.usravatar{
     width: 2rem;
     height: 2rem;
@@ -56,7 +54,6 @@ h6{
 	border-radius: 1rem;
 	flex:0 0;
 }
-
 .commentinput{
 	flex:1 1;
 	margin:0 1rem;
@@ -72,16 +69,13 @@ h6{
 	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 	overflow-y:hidden;
 }
-
 .commentinput:focus{
 	outline: none !important;
 	border:1px solid #2563d6;
 }
-
 #commentBut,.commentBut{
 	width: 4rem;
 }
-
 button {
 	background-color: rgb(135 102 246);
 	border: 1px solid rgb(135 102 246);
@@ -99,7 +93,6 @@ button {
 	font-weight: 600;
 	font-size: 0.8rem;
 }
-
 hr{
 	height:1px;
 	border-width:0;
@@ -114,7 +107,6 @@ hr{
 	display:flex;
 	margin-top: 2rem;
 }
-
 .commentLeft{
 	width:2rem;
 	flex:0 0;
@@ -126,40 +118,33 @@ hr{
 	flex:1 1;
 	padding: 0 1rem;
 }
-
 .username{
 	font-weight: 600;
 }
-
 .date{
 	font-size: 0.8rem;
 	color:rgb(68 104 143);
 }
-
 .commentbody{
 	line-height: 1.5;
 	margin:0.5rem 0 0;
 }
-
 .commentfoot{
 	display: flex;
 	justify-content:flex-start;
 }
-
 .upvote{
 	color:rgb(68 104 143);
 	padding:1rem 1rem 0 0;
 	font-weight: 600;
 	cursor: pointer;
 }
-
 .reply{
 	color:rgb(68 104 143);
 	padding:1rem 1rem 0 1rem;
 	font-weight: 600;
 	cursor: pointer;
 }
-
 .replies{
 	margin-top: 1rem;
 }

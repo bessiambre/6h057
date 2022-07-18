@@ -2,7 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const http = require('http');
 const Push = require('./lib/push.js');
-
 const app = express();
 const server = http.createServer(app);
 const port = 3000;
@@ -11,7 +10,7 @@ const { Pool, Client } = require('pg');
 
 const pool = new Pool();
 
-//I started using fastify.io instead of express on new projects but since express is the requirement...
+//I often use fastify.io instead of express on new projects but since express is the requirement...
 
 app.use(bodyParser.json());
 
@@ -19,6 +18,9 @@ app.get('/', (req, res) => {
 	res.redirect('/index.html');
 });
 
+/**
+ * retrieve comments for an article
+ */
 app.get('/comment', async (req, res, next) => {
 	try {
 		const articleid = req.query.articleid;
@@ -40,13 +42,15 @@ app.get('/comment', async (req, res, next) => {
 			WHERE articleid=$1
 			ORDER BY date DESC
 		`,[articleid,userid]);
-		//console.log(dbres);
 		res.json(dbres.rows);
 	}catch(error){
 		return next(error);
 	}
 });
 
+/**
+ * Save a comment
+ */
 app.post('/comment', async(req, res,next) => {
 	try {
 		const body = req.body.body;
@@ -64,12 +68,14 @@ app.post('/comment', async(req, res,next) => {
 		)`,[userid,body,articleid,parent]);
 
 		res.json({ok:true});
-
 	}catch(error){
 		return next(error);
 	}
 });
 
+/**
+ * Toggle an upvote
+ */
 app.put('/upvote', async(req, res,next) => {
 	try {
 		const commentid = req.body.commentid;
