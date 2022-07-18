@@ -126,3 +126,6 @@ const push = new Push({server});
 server.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+
+
+module.exports = app; // for testing

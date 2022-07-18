@@ -24,3 +24,8 @@ Then in you browser goto <http://localhost:3000/index.html>
 V1 also deployed at <https://iiczyj4epv.us-east-1.awsapprunner.com> 
 
 V2 is deployed at <https://nhycvi93ad.us-east-1.awsapprunner.com>
+
+
+## Test
+
+    npm test
